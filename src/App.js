@@ -1,7 +1,8 @@
-import Signin from "./pages/Signin";
+import Routes from "./Routes";
+import "./App.scss";
 
 const App = () => {
-  return <Signin />;
+  return <Routes />;
 };
 
 export default App;

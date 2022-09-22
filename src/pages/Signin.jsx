@@ -4,12 +4,12 @@ import {
   TextField,
   Typography,
   Container,
-  Link,
   Grid,
   Box,
 } from "@mui/material";
 
 import { LockOutlined } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const Signin = () => {
   const handleSubmit = (event) => {
@@ -68,7 +68,7 @@ const Signin = () => {
           </Button>
           <Grid container justifyContent={'flex-end'}>
             <Grid item >
-              <Link href="#" variant="body2">
+              <Link to="/signup">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
