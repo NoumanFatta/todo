@@ -3,28 +3,34 @@ import {
   Box,
   Button,
   Card,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import Popup from "../components/Popup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
-import { getActiveTodos } from "../controllers/todos";
+import { createTodo, getActiveTodos } from "../controllers/todos";
 import cookie from "react-cookies";
 import { useDispatch, useSelector } from "react-redux";
-import { getActiveTodosReducer } from "../store/reducers/todos-slice";
+import {
+  createTodoReducer,
+  getActiveTodosReducer,
+} from "../store/reducers/todos-slice";
 import { getAllGroups } from "../controllers/groups";
 import { getGroupsReducer } from "../store/reducers/groups-slice";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const token = cookie.load("user") ? cookie.load("user") : "";
   const { todos, isLoading } = useSelector((state) => state.todo);
   const { groups } = useSelector((state) => state.group);
-
   useEffect(() => {
-    const token = cookie.load("user") ? cookie.load("user") : "";
     getActiveTodos(token).then((todos) => {
       dispatch(getActiveTodosReducer(todos));
     });
@@ -33,47 +39,7 @@ const Home = () => {
     });
     // eslint-disable-next-line
   }, []);
-  // const groups = [
-  //   {
-  //     name: "Group 1",
-  //     createdBy: "1",
-  //     id: "101",
-  //     todos: ["1", "3"],
-  //   },
-  //   {
-  //     name: "Group 2",
-  //     createdBy: "1",
-  //     id: "102",
-  //     todos: ["2"],
-  //   },
-  // ];
-  // const todos = [
-  //   {
-  //     title: "Todo 1",
-  //     description: "description 1",
-  //     id: "1",
-  //     status: "active",
-  //     groupId: "101",
-  //   },
-  //   {
-  //     title: "Todo 2",
-  //     description: "description 2",
-  //     id: "2",
-  //     status: "active",
-  //     groupId: "102",
-  //   },
-  //   {
-  //     title: "Todo 3",
-  //     description: "description 3",
-  //     id: "3",
-  //     status: "active",
-  //     groupId: "101",
-  //   },
-  // ];
-  // const newTodos = todos.map((todo) => {
-  //   const group = groups.find((group) => group.id === todo.groupId);
-  //   return { ...todo, group: group.name };
-  // });
+
   const [open, setOpen] = useState({
     edit: false,
     create: false,
@@ -98,12 +64,17 @@ const Home = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    createTodo(token, {
       title: data.get("title"),
       description: data.get("description"),
-    });
+      group: data.get("group"),
+    })
+      .then((response) => {
+        dispatch(createTodoReducer(response.data));
+        setOpen((prev) => ({ ...prev, create: false }));
+      })
+      .catch((err) => console.log(err));
   };
-
   return (
     <Card sx={{ padding: 5 }}>
       <Grid
@@ -147,9 +118,9 @@ const Home = () => {
                 </IconButton>
                 <Typography variant="h4">{todo.title}</Typography>
                 <Typography variant="h6">{todo.description}</Typography>
-                {/* <Typography variant="p">
+                <Typography variant="p">
                   <strong>Group: </strong> {todo.group}
-                </Typography> */}
+                </Typography>
                 <Box
                   display="flex"
                   justifyContent="space-between"
@@ -186,12 +157,7 @@ const Home = () => {
         <h1>status: {openedTodo.status}</h1>
       </Popup>
       <Popup handleClose={handleClose} fullWidth={false} open={open.create}>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ mt: 1 }}
-        >
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -207,6 +173,16 @@ const Home = () => {
             name="description"
             label="description"
           />
+          <FormControl fullWidth>
+            <InputLabel>Select Group</InputLabel>
+            <Select name="group" defaultValue="" label="Select group">
+              {groups.map((group) => (
+                <MenuItem key={group.id} value={group.id}>
+                  {group.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <Button
             type="submit"
             fullWidth

@@ -7,18 +7,18 @@ import Home from "./pages/Home";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 const Routes = ({ isLoggedIn }) => {
-  useEffect(() => {
-    const user = [
-      {
-        firstName: "Nouman",
-        lastName: "Fatta",
-        email: "test@test.com",
-        password: "123",
-        id: "1",
-      },
-    ];
-    localStorage.setItem("users", JSON.stringify(user));
-  }, []);
+  // useEffect(() => {
+  //   const user = [
+  //     {
+  //       firstName: "Nouman",
+  //       lastName: "Fatta",
+  //       email: "test@test.com",
+  //       password: "123",
+  //       id: "1",
+  //     },
+  //   ];
+  //   localStorage.setItem("users", JSON.stringify(user));
+  // }, []);
 
   let element = useRoutes([
     {
@@ -28,17 +28,17 @@ const Routes = ({ isLoggedIn }) => {
         {
           index: true,
           element: isLoggedIn ? (
-            <Navigate to="home" />
+            <Navigate to="todos" />
           ) : (
             <Navigate to="/login" />
           ),
         },
         {
-          path: "home",
+          path: "todos",
           element: <Home />,
         },
         {
-          path: "completed",
+          path: "todos/completed",
           element: <Home />,
         },
         {
@@ -49,7 +49,7 @@ const Routes = ({ isLoggedIn }) => {
     },
     {
       path: "/",
-      element: !isLoggedIn ? <BlankLayout /> : <Navigate to="/home" />,
+      element: !isLoggedIn ? <BlankLayout /> : <Navigate to="/todos" />,
       children: [
         { path: "/login", element: <Signin /> },
         { path: "/signup", element: <Signup /> },

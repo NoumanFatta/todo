@@ -8,11 +8,14 @@ const todoSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    getActiveTodosReducer(state, aciton) {
+    getActiveTodosReducer(state, action) {
       state.isLoading = false;
-      state.todos = aciton.payload;
+      state.todos = action.payload;
+    },
+    createTodoReducer(state, action) {
+      state.todos.push(action.payload);
     },
   },
 });
 export default todoSlice.reducer;
-export const { getActiveTodosReducer } = todoSlice.actions;
+export const { getActiveTodosReducer, createTodoReducer } = todoSlice.actions;

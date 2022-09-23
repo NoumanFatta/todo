@@ -28,7 +28,7 @@ export const signupUser = async (user) => {
   let success = false;
   const { email, password, firstName, lastName } = user;
   if (email && password && firstName && lastName) {
-    const allUsers = JSON.parse(localStorage.getItem("users"));
+    const allUsers = JSON.parse(localStorage.getItem("users")) || [];
     const userFound = allUsers.find((user) => user.email === email);
     if (userFound) {
       return { msg: "Email already exists", success };

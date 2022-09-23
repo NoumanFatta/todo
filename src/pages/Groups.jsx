@@ -31,7 +31,6 @@ import { Link } from "react-router-dom";
 
 const Groups = () => {
   const { groups, isLoading } = useSelector((state) => state.group);
-  console.log(groups);
   const token = cookie.load("user") ? cookie.load("user") : "";
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();

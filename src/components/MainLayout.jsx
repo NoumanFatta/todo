@@ -15,8 +15,8 @@ import { Link, Outlet } from "react-router-dom";
 
 const drawerWidth = 240;
 const navItems = [
-  { title: "Active Todos", link: "/home" },
-  { title: "Completed Todos", link: "/completed" },
+  { title: "Active Todos", link: "/todos" },
+  { title: "Completed Todos", link: "/todos/completed" },
   { title: "Groups", link: "/groups" },
 ];
 
