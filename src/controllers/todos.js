@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import { checkToken } from "./checkToken";
 
-export const getActiveTodos = async (token) => {
+export const getActiveTodos = async (token, status) => {
   const isAuthencitaed = await checkToken(token);
   if (isAuthencitaed) {
     const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
     const groups = JSON.parse(localStorage.getItem("groups")) || [];
     const todoById = allTodos.filter(
-      (todo) => todo.createdBy === isAuthencitaed.id && todo.status === "active"
+      (todo) => todo.createdBy === isAuthencitaed.id && todo.status === status
     );
     const todoWithGroup = todoById.map((todo) => {
       const group = groups.find((group) => group.id === todo.group);
@@ -73,6 +73,23 @@ export const editTodo = async (token, todoId, newTodo) => {
     allTodos[index].description = description;
     allTodos[index].description = description;
     localStorage.setItem("todos", JSON.stringify(allTodos));
-    return { todo: allTodos[index] };
+    return { todo: allTodos[index], success: true };
+  }
+};
+
+export const changeStatus = async (token, todoId, status) => {
+  const isAuthencitaed = await checkToken(token);
+  if (isAuthencitaed) {
+    console.log(status)
+    const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    const index = allTodos.findIndex((todo) => todo.id === todoId);
+    allTodos[index].status = status;
+    localStorage.setItem("todos", JSON.stringify(allTodos));
+    if (status === "completed") {
+      const response = allTodos.filter((todo) => todo.status === "active");
+      return { todos: response, success: true };
+    }
+    const response = allTodos.filter((todo) => todo.status === "completed");
+    return { todos: response, success: true };
   }
 };

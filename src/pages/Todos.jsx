@@ -12,10 +12,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import Popup from "../components/Popup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
-import { createTodo, getActiveTodos } from "../controllers/todos";
+import { changeStatus, createTodo, getActiveTodos } from "../controllers/todos";
 import cookie from "react-cookies";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,21 +27,22 @@ import { getAllGroups } from "../controllers/groups";
 import { getGroupsReducer } from "../store/reducers/groups-slice";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Todos = (props) => {
+  const { status } = props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = cookie.load("user") ? cookie.load("user") : "";
   const { todos, isLoading } = useSelector((state) => state.todo);
   const { groups } = useSelector((state) => state.group);
   useEffect(() => {
-    getActiveTodos(token).then((todos) => {
+    getActiveTodos(token, status).then((todos) => {
       dispatch(getActiveTodosReducer(todos));
     });
     getAllGroups(token).then((groups) => {
       dispatch(getGroupsReducer(groups));
     });
     // eslint-disable-next-line
-  }, []);
+  }, [status]);
 
   const [open, setOpen] = useState(false);
   const editTodo = (currentTodo) => {
@@ -65,6 +67,16 @@ const Home = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  const statusHandler = async (todo) => {
+    const sendStatus = status === "active" ? "completed" : "active";
+    changeStatus(token, todo.id, sendStatus).then((response) => {
+      if (response.success) {
+        dispatch(getActiveTodosReducer(response.todos));
+      }
+    });
+  };
+
   return (
     <Card sx={{ padding: 5 }}>
       <Grid
@@ -82,17 +94,21 @@ const Home = () => {
         }}
       >
         <Grid item>
-          <Typography variant="h4">Active Todos</Typography>
+          <Typography textTransform="capitalize" variant="h4">
+            {status} Todos
+          </Typography>
         </Grid>
-        <Grid item>
-          <Button
-            onClick={() => setOpen(true)}
-            disabled={groups.length ? false : true}
-            variant="contained"
-          >
-            Create Todo
-          </Button>
-        </Grid>
+        {status === "active" && (
+          <Grid item>
+            <Button
+              onClick={() => setOpen(true)}
+              disabled={groups.length ? false : true}
+              variant="contained"
+            >
+              Create Todo
+            </Button>
+          </Grid>
+        )}
       </Grid>
       <Grid className="active-todo-list" container spacing={2}>
         {isLoading ? (
@@ -116,62 +132,70 @@ const Home = () => {
                   justifyContent="space-between"
                   paddingTop={1}
                 >
-                  <Button variant="outlined" endIcon={<DoneIcon />}>
-                    Mar as Done
+                  <Button
+                    onClick={() => statusHandler(todo)}
+                    variant="outlined"
+                    endIcon={status === "active" ? <DoneIcon /> : <CloseIcon />}
+                  >
+                    {status === "active" ? "Mark as Done" : "Mark as Active"}
                   </Button>
-                  <Button variant="contained" onClick={() => editTodo(todo)}>
-                    Edit Todo
-                  </Button>
+                  {status === "active" && (
+                    <Button variant="contained" onClick={() => editTodo(todo)}>
+                      Edit Todo
+                    </Button>
+                  )}
                 </Box>
               </Card>
             </Grid>
           ))
         ) : (
           <Grid item xs={12}>
-            <Typography variant="h5">No Active todos found</Typography>
+            <Typography variant="h5">No todos found</Typography>
           </Grid>
         )}
       </Grid>
-      <Popup handleClose={handleClose} fullWidth={false} open={open}>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Title"
-            name="title"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="description"
-            label="description"
-          />
-          <FormControl fullWidth>
-            <InputLabel>Select Group</InputLabel>
-            <Select name="group" defaultValue="" label="Select group">
-              {groups.length !== 0 &&
-                groups.map((group) => (
-                  <MenuItem key={group.id} value={group.id}>
-                    {group.name}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Create Todo
-          </Button>
-        </Box>
-      </Popup>
+      {status === "active" && (
+        <Popup handleClose={handleClose} fullWidth={false} open={open}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Title"
+              name="title"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="description"
+              label="description"
+            />
+            <FormControl fullWidth>
+              <InputLabel>Select Group</InputLabel>
+              <Select name="group" defaultValue="" label="Select group">
+                {groups.length !== 0 &&
+                  groups.map((group) => (
+                    <MenuItem key={group.id} value={group.id}>
+                      {group.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Create Todo
+            </Button>
+          </Box>
+        </Popup>
+      )}
     </Card>
   );
 };
 
-export default Home;
+export default Todos;

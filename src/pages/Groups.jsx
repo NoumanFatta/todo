@@ -49,7 +49,7 @@ const Groups = () => {
     }).then((groups) => dispatch(createGroupReducer(groups)));
     setOpen(false);
   };
-
+console.log(groups)
   return (
     <Card sx={{ padding: 5 }}>
       <Grid
@@ -91,20 +91,22 @@ const Groups = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                   <List>
-                    {group.todos.length !== 0 ? 
-                    group.todos.map((todo) => (
-                      <ListItem key={todo.id} disablePadding>
-                        <ListItemButton>
-                          <ListItemIcon>
-                            <LinkIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={todo.title} />
-                        </ListItemButton>
-                      </ListItem>
-                    ))
-                    :
-                    <Typography>No Todo in this group</Typography>
-                  }
+                    {group.todos.length !== 0 ? (
+                      group.todos.map((todo) => (
+                        <ListItem key={todo.id} disablePadding>
+                          <ListItemButton>
+                            <ListItemIcon>
+                              <LinkIcon />
+                            </ListItemIcon>
+                            <Link to = {`/todos/${todo.id}`}>
+                              <ListItemText primary={todo.title} />
+                            </Link>
+                          </ListItemButton>
+                        </ListItem>
+                      ))
+                    ) : (
+                      <Typography>No Todo in this group</Typography>
+                    )}
                   </List>
                 </AccordionDetails>
               </Accordion>

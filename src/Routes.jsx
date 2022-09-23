@@ -4,7 +4,7 @@ import BlankLayout from "./components/BlankLayout";
 import MainLayout from "./components/MainLayout";
 import EditTodo from "./pages/EditTodo";
 import Groups from "./pages/Groups";
-import Home from "./pages/Home";
+import Todos from "./pages/Todos";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 const Routes = ({ isLoggedIn }) => {
@@ -36,7 +36,7 @@ const Routes = ({ isLoggedIn }) => {
         },
         {
           path: "todos",
-          element: <Home />,
+          element: <Todos status="active" />,
         },
         {
           path: "todos/:id",
@@ -44,7 +44,7 @@ const Routes = ({ isLoggedIn }) => {
         },
         {
           path: "todos/completed",
-          element: <Home />,
+          element: <Todos status="completed" />,
         },
         {
           path: "groups",

@@ -9,11 +9,13 @@ export const getAllGroups = async (token) => {
     const groupById = allGroups.filter(
       (group) => group.createdBy === isAuthencitaed.id
     );
+    console.log(groupById);
     const groupsWithTodos = groupById.map((todos) => {
-      const obj = JSON.parse(JSON.stringify(todos));
+      const obj = { ...todos };
+      obj.todos = []
       todos.todos.map((todoId) => {
         const fil = allTodos.filter((todo) => todo.id === todoId);
-        obj.todos = fil;
+        obj.todos = [...obj.todos, ...fil];
       });
       return obj;
     });

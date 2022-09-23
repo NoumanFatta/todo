@@ -49,7 +49,12 @@ const EditTodo = () => {
       title: data.get("title"),
       description: data.get("description"),
       group: data.get("group"),
-    }).then((response) => dispatch(updateTodo(response)));
+    }).then((response) => {
+      if (response.success) {
+        dispatch(updateTodo(response));
+        alert('todo has been updated')
+      }
+    });
   };
   return (
     <Container component="main" maxWidth="xs">
