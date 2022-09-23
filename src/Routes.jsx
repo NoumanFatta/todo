@@ -5,8 +5,7 @@ import MainLayout from "./components/MainLayout";
 import Home from "./pages/Home";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
-const Routes = () => {
-  const isLoggedIn = false;
+const Routes = ({ isLoggedIn }) => {
   useEffect(() => {
     const user = [
       {

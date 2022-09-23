@@ -16,16 +16,14 @@ const authSlice = createSlice({
     loginReducer(state, action) {
       state.isLoggedIn = true;
       state.user = action.payload.token;
-      cookie.save("user", JSON.stringify(action.payload.token), { path: "/" });
+      cookie.save("user", action.payload.token, { path: "/" });
+    },
+    setUserData: (state, action) => {
+      if (!state.userData?.id) {
+        state.userData = action.payload;
+      }
     },
   },
-  // reducers: {
-  //   setUserData: (state, action) => {
-  //     if (!state.userData?._id) {
-  //       state.userData = action.payload;
-  //     }
-  //   },
-  // },
 });
 export default authSlice.reducer;
-export const { loginReducer } = authSlice.actions;
+export const { loginReducer, setUserData } = authSlice.actions;
