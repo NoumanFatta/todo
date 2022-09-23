@@ -52,20 +52,20 @@ const Signin = () => {
             required
             fullWidth
             id="email"
-            label="Email Address"
             name="email"
             autoComplete="email"
             autoFocus
+            placeholder="test@test.com"
           />
           <TextField
             margin="normal"
             required
             fullWidth
             name="password"
-            label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
+            placeholder="123"
           />
           <Button
             type="submit"

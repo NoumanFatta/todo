@@ -17,6 +17,8 @@ export const loginUser = async (user) => {
   const token = await new jose.SignJWT({
     id: userFound.id,
     email: userFound.email,
+    firstName: userFound.firstName,
+    lastName: userFound.lastName,
   })
     .setProtectedHeader({ alg: "HS256" })
     .sign(secret);

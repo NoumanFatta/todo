@@ -12,7 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Link, Outlet } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../store/reducers/auth-slice";
 
 const drawerWidth = 240;
@@ -24,11 +24,13 @@ const navItems = [
 
 const MainLayout = (props) => {
   const { window } = props;
+  const { userData } = useSelector((state) => state.auth);
+
   const [mobileOpen, setMobileOpen] = useState(false);
-  const dispatch = useDispatch()
-  const logoutHandler = () =>{
-    dispatch(logoutUser())
-  }
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(logoutUser());
+  };
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -68,9 +70,13 @@ const MainLayout = (props) => {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            sx={{
+              textTransform: "capitalize",
+              flexGrow: 1,
+              display: { xs: "none", sm: "block" },
+            }}
           >
-            Todo App
+            {userData?.firstName} {userData?.lastName}
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
@@ -78,7 +84,11 @@ const MainLayout = (props) => {
                 <Link to={item.link}>{item.title}</Link>
               </Button>
             ))}
-            <Button onClick = {logoutHandler} variant="contained" sx={{ color: "white" }}>
+            <Button
+              onClick={logoutHandler}
+              variant="contained"
+              sx={{ color: "white" }}
+            >
               Logout
             </Button>
           </Box>

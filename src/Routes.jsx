@@ -8,18 +8,41 @@ import Todos from "./pages/Todos";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 const Routes = ({ isLoggedIn }) => {
-  // useEffect(() => {
-  //   const user = [
-  //     {
-  //       firstName: "Nouman",
-  //       lastName: "Fatta",
-  //       email: "test@test.com",
-  //       password: "123",
-  //       id: "1",
-  //     },
-  //   ];
-  //   localStorage.setItem("users", JSON.stringify(user));
-  // }, []);
+  useEffect(() => {
+    const allUsers = JSON.parse(localStorage.getItem("users"));
+    if (!allUsers) {
+      const user = [
+        {
+          firstName: "Dev",
+          lastName: "test",
+          email: "test@test.com",
+          password: "123",
+          id: "871e596e-9b98-43e0-ae4b-b73c98df9f73",
+        },
+      ];
+      const groups = [
+        {
+          name: "Group 1",
+          todos: ["d74674fc-8c21-4715-9fb8-b0a87cb42dfd"],
+          id: "81bcdef6-6262-4bd6-96ec-0c9882eafb82",
+          createdBy: "871e596e-9b98-43e0-ae4b-b73c98df9f73",
+        },
+      ];
+      const todos = [
+        {
+          title: "Title 2",
+          description: "desciption 2",
+          status: "active",
+          group: "81bcdef6-6262-4bd6-96ec-0c9882eafb82",
+          id: "d74674fc-8c21-4715-9fb8-b0a87cb42dfd",
+          createdBy: "871e596e-9b98-43e0-ae4b-b73c98df9f73",
+        },
+      ];
+      localStorage.setItem("users", JSON.stringify(user));
+      localStorage.setItem("groups", JSON.stringify(groups));
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }, []);
 
   let element = useRoutes([
     {
