@@ -33,14 +33,16 @@ const EditTodo = () => {
     getTodoById(token, todoId.id).then((response) => {
       dispatch(getTodoByIdReducer(response));
     });
+    // eslint-disable-next-line
   }, []);
   useEffect(() => {
     if (singleTodo.group) {
       elementsRef.current.map((ref, ind) => {
-        ref.current.value = singleTodo[refs[ind]];
+        return ref.current.value = singleTodo[refs[ind]];
       });
       setGroupValue(singleTodo.group);
     }
+    // eslint-disable-next-line
   }, [singleTodo]);
 
   const handleSubmit = (event) => {

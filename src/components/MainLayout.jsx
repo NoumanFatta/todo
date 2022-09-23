@@ -12,6 +12,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Link, Outlet } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../store/reducers/auth-slice";
 
 const drawerWidth = 240;
 const navItems = [
@@ -20,10 +22,13 @@ const navItems = [
   { title: "Groups", link: "/groups" },
 ];
 
-const Nav = (props) => {
+const MainLayout = (props) => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-
+  const dispatch = useDispatch()
+  const logoutHandler = () =>{
+    dispatch(logoutUser())
+  }
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -73,6 +78,9 @@ const Nav = (props) => {
                 <Link to={item.link}>{item.title}</Link>
               </Button>
             ))}
+            <Button onClick = {logoutHandler} variant="contained" sx={{ color: "white" }}>
+              Logout
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
@@ -104,4 +112,4 @@ const Nav = (props) => {
   );
 };
 
-export default Nav;
+export default MainLayout;

@@ -11,8 +11,8 @@ export const getAllGroups = async (token) => {
     );
     const groupsWithTodos = groupById.map((todos) => {
       const obj = { ...todos };
-      obj.todos = []
-      todos.todos.map((todoId) => {
+      obj.todos = [];
+      todos.todos.forEach((todoId) => {
         const fil = allTodos.filter((todo) => todo.id === todoId);
         obj.todos = [...obj.todos, ...fil];
       });
@@ -33,7 +33,9 @@ export const createGroup = async (token, newGroup) => {
       const id = uuidv4();
       allGroups.push({ name, todos: [], id, createdBy: isAuthencitaed.id });
       localStorage.setItem("groups", JSON.stringify(allGroups));
-      return allGroups;
+      return allGroups.filter(
+        (groups) => groups.createdBy === isAuthencitaed.id
+      );
     }
   } else {
     return [];

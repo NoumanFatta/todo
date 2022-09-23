@@ -98,10 +98,16 @@ export const changeStatus = async (token, todoId, status) => {
     localStorage.setItem("todos", JSON.stringify(allTodos));
     if (status === "completed") {
       const response = allTodos.filter((todo) => todo.status === "active");
-      return { todos: response, success: true };
+      return {
+        todos: response.filter((todo) => todo.createdBy === isAuthencitaed.id),
+        success: true,
+      };
     }
     const response = allTodos.filter((todo) => todo.status === "completed");
-    return { todos: response, success: true };
+    return {
+      todos: response.filter((todo) => todo.createdBy === isAuthencitaed.id),
+      success: true,
+    };
   }
 };
 
@@ -121,6 +127,9 @@ export const deleleTodo = async (token, todoId) => {
     allTodos.splice(todoIndex, 1);
     localStorage.setItem("todos", JSON.stringify(allTodos));
     localStorage.setItem("groups", JSON.stringify(allGroups));
-    return { groups: allGroups, todos: allTodos };
+    return {
+      groups: allGroups,
+      todos: allTodos.filter((todo) => todo.createdBy === isAuthencitaed.id),
+    };
   }
 };

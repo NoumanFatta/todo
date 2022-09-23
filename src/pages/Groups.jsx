@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   Grid,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -17,7 +16,6 @@ import {
   Typography,
 } from "@mui/material";
 import Popup from "../components/Popup";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LinkIcon from "@mui/icons-material/Link";
 import cookie from "react-cookies";

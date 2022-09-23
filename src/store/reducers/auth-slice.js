@@ -18,6 +18,11 @@ const authSlice = createSlice({
       state.user = action.payload.token;
       cookie.save("user", action.payload.token, { path: "/" });
     },
+    logoutUser(state) {
+      state.isLoggedIn = false;
+      state.user = null;
+      cookie.remove("user", { path: "/" });
+    },
     setUserData: (state, action) => {
       if (!state.userData?.id) {
         state.userData = action.payload;
@@ -26,4 +31,4 @@ const authSlice = createSlice({
   },
 });
 export default authSlice.reducer;
-export const { loginReducer, setUserData } = authSlice.actions;
+export const { loginReducer, setUserData, logoutUser } = authSlice.actions;
