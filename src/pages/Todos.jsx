@@ -12,11 +12,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import Popup from "../components/Popup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
-import { changeStatus, createTodo, getActiveTodos } from "../controllers/todos";
+import {
+  changeStatus,
+  createTodo,
+  deleleTodo,
+  getActiveTodos,
+} from "../controllers/todos";
 import cookie from "react-cookies";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -76,6 +81,11 @@ const Todos = (props) => {
       }
     });
   };
+  const deleteHandler = async (id) => {
+    deleleTodo(token, id).then((response) => {
+      dispatch(getActiveTodosReducer(response.todos));
+    });
+  };
 
   return (
     <Card sx={{ padding: 5 }}>
@@ -119,7 +129,11 @@ const Todos = (props) => {
           todos.map((todo) => (
             <Grid key={todo.id} item xs={12} sm={6} md={6} lg={4}>
               <Card sx={{ paddingX: 2, paddingY: 1, position: "relative" }}>
-                <IconButton className="delete-icon" aria-label="delete">
+                <IconButton
+                  onClick={() => deleteHandler(todo.id)}
+                  className="delete-icon"
+                  aria-label="delete"
+                >
                   <DeleteIcon />
                 </IconButton>
                 <Typography variant="h4">{todo.title}</Typography>

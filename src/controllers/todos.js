@@ -104,3 +104,23 @@ export const changeStatus = async (token, todoId, status) => {
     return { todos: response, success: true };
   }
 };
+
+export const deleleTodo = async (token, todoId) => {
+  const isAuthencitaed = await checkToken(token);
+  if (isAuthencitaed) {
+    const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    const allGroups = JSON.parse(localStorage.getItem("groups")) || [];
+    const todoIndex = allTodos.findIndex((todo) => todo.id === todoId);
+    const groupIndex = allGroups.findIndex(
+      (group) => group.id === allTodos[todoIndex].group
+    );
+    const todoToBeDeleted = allGroups[groupIndex].todos.indexOf(todoId);
+    if (todoToBeDeleted > -1) {
+      allGroups[groupIndex].todos.splice(todoToBeDeleted, 1);
+    }
+    allTodos.splice(todoIndex, 1);
+    localStorage.setItem("todos", JSON.stringify(allTodos));
+    localStorage.setItem("groups", JSON.stringify(allGroups));
+    return { groups: allGroups, todos: allTodos };
+  }
+};

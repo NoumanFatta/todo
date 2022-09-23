@@ -93,11 +93,13 @@ const Groups = () => {
                     {group.todos.length !== 0 ? (
                       group.todos.map((todo) => (
                         <ListItem key={todo.id} disablePadding>
-                          <ListItemButton>
+                          <ListItemButton
+                            disabled={todo.status === "completed" ? true : false}
+                          >
                             <ListItemIcon>
                               <LinkIcon />
                             </ListItemIcon>
-                            <Link to = {`/todos/${todo.id}`}>
+                            <Link to={`/todos/${todo.id}`}>
                               <ListItemText primary={todo.title} />
                             </Link>
                           </ListItemButton>
