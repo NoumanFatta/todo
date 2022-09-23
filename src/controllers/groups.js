@@ -9,7 +9,6 @@ export const getAllGroups = async (token) => {
     const groupById = allGroups.filter(
       (group) => group.createdBy === isAuthencitaed.id
     );
-    console.log(groupById);
     const groupsWithTodos = groupById.map((todos) => {
       const obj = { ...todos };
       obj.todos = []

@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useRef } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { editTodo, getTodoById } from "../controllers/todos";
 import cookie from "react-cookies";
@@ -25,6 +25,7 @@ const EditTodo = () => {
   const { singleTodo } = useSelector((state) => state.todo);
   const { groups } = useSelector((state) => state.group);
   const dispatch = useDispatch();
+  const [groupValue, setGroupValue] = useState("");
   useEffect(() => {
     getAllGroups(token).then((groups) => {
       dispatch(getGroupsReducer(groups));
@@ -38,6 +39,7 @@ const EditTodo = () => {
       elementsRef.current.map((ref, ind) => {
         ref.current.value = singleTodo[refs[ind]];
       });
+      setGroupValue(singleTodo.group);
     }
   }, [singleTodo]);
 
@@ -52,9 +54,13 @@ const EditTodo = () => {
     }).then((response) => {
       if (response.success) {
         dispatch(updateTodo(response));
-        alert('todo has been updated')
+        alert("todo has been updated");
       }
     });
+  };
+  const groupHandler = (e) => {
+    const { value } = e.target;
+    setGroupValue(value);
   };
   return (
     <Container component="main" maxWidth="xs">
@@ -88,8 +94,9 @@ const EditTodo = () => {
             <InputLabel>Select Group</InputLabel>
             <Select
               name="group"
-              value={singleTodo.group ? singleTodo.group : ""}
+              value={groupValue}
               label="Select group"
+              onChange={groupHandler}
             >
               {groups.map((group) => (
                 <MenuItem key={group.id} value={group.id}>

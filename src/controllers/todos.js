@@ -68,11 +68,23 @@ export const editTodo = async (token, todoId, newTodo) => {
   const isAuthencitaed = await checkToken(token);
   if (isAuthencitaed) {
     const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    const allGroups = JSON.parse(localStorage.getItem("groups")) || [];
     const index = allTodos.findIndex((todo) => todo.id === todoId);
+    const oldGroupId = allTodos[index].group;
+    const oldGroupIndex = allGroups.findIndex(
+      (group) => group.id === oldGroupId
+    );
+    const todoIndex = allGroups[oldGroupIndex].todos.indexOf(todoId);
+    if (todoIndex > -1) {
+      allGroups[oldGroupIndex].todos.splice(todoIndex, 1);
+    }
+    const newGroupIndex = allGroups.findIndex((groups) => groups.id === group);
+    allGroups[newGroupIndex].todos.push(todoId);
     allTodos[index].title = title;
     allTodos[index].description = description;
-    allTodos[index].description = description;
+    allTodos[index].group = group;
     localStorage.setItem("todos", JSON.stringify(allTodos));
+    localStorage.setItem("groups", JSON.stringify(allGroups));
     return { todo: allTodos[index], success: true };
   }
 };
@@ -80,7 +92,6 @@ export const editTodo = async (token, todoId, newTodo) => {
 export const changeStatus = async (token, todoId, status) => {
   const isAuthencitaed = await checkToken(token);
   if (isAuthencitaed) {
-    console.log(status)
     const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
     const index = allTodos.findIndex((todo) => todo.id === todoId);
     allTodos[index].status = status;

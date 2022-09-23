@@ -49,7 +49,6 @@ const Groups = () => {
     }).then((groups) => dispatch(createGroupReducer(groups)));
     setOpen(false);
   };
-console.log(groups)
   return (
     <Card sx={{ padding: 5 }}>
       <Grid
