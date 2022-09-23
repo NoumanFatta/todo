@@ -1,26 +1,36 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import React from "react";
+import {
+  CssBaseline,
+  Avatar,
+  Button,
+  TextField,
+  Grid,
+  Box,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Link } from "react-router-dom";
-
+import { signupUser } from "../controllers/user";
+import { useDispatch } from "react-redux";
+import { loginReducer } from "../store/reducers/auth-slice";
 
 const Signup = () => {
-  const handleSubmit = (event) => {
+  const dispatch = useDispatch();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const response = await signupUser({
       email: data.get("email"),
       password: data.get("password"),
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
     });
+    if (response.success) {
+      dispatch(loginReducer({ token: response.token }));
+    } else {
+      alert(response.msg);
+    }
   };
 
   return (
@@ -84,12 +94,6 @@ const Signup = () => {
                 autoComplete="new-password"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -101,9 +105,7 @@ const Signup = () => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link to="/login">
-                Already have an account? Sign in
-              </Link>
+              <Link to="/login">Already have an account? Sign in</Link>
             </Grid>
           </Grid>
         </Box>

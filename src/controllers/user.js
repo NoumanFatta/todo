@@ -1,5 +1,5 @@
 import * as jose from "jose";
-
+import { v4 as uuidv4 } from "uuid";
 const secret = new TextEncoder().encode("NoumanAminFatta");
 
 export const loginUser = async (user) => {
@@ -22,4 +22,29 @@ export const loginUser = async (user) => {
     .sign(secret);
   success = true;
   return { token, success };
+};
+
+export const signupUser = async (user) => {
+  let success = false;
+  const { email, password, firstName, lastName } = user;
+  if (email && password && firstName && lastName) {
+    const allUsers = JSON.parse(localStorage.getItem("users"));
+    const userFound = allUsers.find((user) => user.email === email);
+    if (userFound) {
+      return { msg: "Email already exists", success };
+    }
+    const id = uuidv4();
+    allUsers.push({ email, password, firstName, lastName, id });
+    localStorage.setItem("users", JSON.stringify(allUsers));
+    const token = await new jose.SignJWT({
+      id,
+      email,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .sign(secret);
+    success = true;
+    return { token, success };
+  } else {
+    return { msg: "Missing Fields", success };
+  }
 };

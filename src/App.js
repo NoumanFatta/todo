@@ -6,6 +6,14 @@ import { useEffect } from "react";
 import { setUserData } from "./store/reducers/auth-slice";
 
 const App = () => {
+  const totos = [{
+    title:"todo 1",
+    id: "101",
+    status:"active",
+    description: "descp 1",
+    createdBy: 'd9eedb2a-5078-40df-9d88-709354626ff2'
+  }]
+  localStorage.setItem('todos',JSON.stringify(totos))
   const secret = new TextEncoder().encode("NoumanAminFatta");
   const loginStatus = useSelector((state) => state.auth);
   const dispatch = useDispatch();
