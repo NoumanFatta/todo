@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 import BlankLayout from "./components/BlankLayout";
 import MainLayout from "./components/MainLayout";
@@ -6,7 +6,20 @@ import Home from "./pages/Home";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 const Routes = () => {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
+  useEffect(() => {
+    const user = [
+      {
+        firstName: "Nouman",
+        lastName: "Fatta",
+        email: "test@test.com",
+        password: "123",
+        id: "1",
+      },
+    ];
+    localStorage.setItem("users", JSON.stringify(user));
+  }, []);
+
   let element = useRoutes([
     {
       path: "/",
