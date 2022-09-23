@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 import BlankLayout from "./components/BlankLayout";
 import MainLayout from "./components/MainLayout";
+import EditTodo from "./pages/EditTodo";
 import Groups from "./pages/Groups";
 import Home from "./pages/Home";
 import Signin from "./pages/Signin";
@@ -36,6 +37,10 @@ const Routes = ({ isLoggedIn }) => {
         {
           path: "todos",
           element: <Home />,
+        },
+        {
+          path: "todos/:id",
+          element: <EditTodo />,
         },
         {
           path: "todos/completed",

@@ -24,9 +24,11 @@ import {
 } from "../store/reducers/todos-slice";
 import { getAllGroups } from "../controllers/groups";
 import { getGroupsReducer } from "../store/reducers/groups-slice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = cookie.load("user") ? cookie.load("user") : "";
   const { todos, isLoading } = useSelector((state) => state.todo);
   const { groups } = useSelector((state) => state.group);
@@ -40,25 +42,13 @@ const Home = () => {
     // eslint-disable-next-line
   }, []);
 
-  const [open, setOpen] = useState({
-    edit: false,
-    create: false,
-  });
-  const [openedTodo, setOpenedTodo] = useState({});
-  const openView = (currentTodo) => {
-    setOpenedTodo(currentTodo);
-    setOpen((prev) => ({ ...prev, edit: true }));
+  const [open, setOpen] = useState(false);
+  const editTodo = (currentTodo) => {
+    navigate(`${currentTodo.id}`);
   };
 
   const handleClose = () => {
-    setOpen({ edit: false, create: false });
-    setTimeout(() => {
-      setOpenedTodo({});
-    }, 100);
-  };
-
-  const createPopup = () => {
-    setOpen((prev) => ({ ...prev, create: true }));
+    setOpen(false);
   };
 
   const handleSubmit = async (event) => {
@@ -71,7 +61,7 @@ const Home = () => {
     })
       .then((response) => {
         dispatch(createTodoReducer(response.data));
-        setOpen((prev) => ({ ...prev, create: false }));
+        setOpen(false);
       })
       .catch((err) => console.log(err));
   };
@@ -96,7 +86,7 @@ const Home = () => {
         </Grid>
         <Grid item>
           <Button
-            onClick={createPopup}
+            onClick={() => setOpen(true)}
             disabled={groups.length ? false : true}
             variant="contained"
           >
@@ -129,7 +119,7 @@ const Home = () => {
                   <Button variant="outlined" endIcon={<DoneIcon />}>
                     Mar as Done
                   </Button>
-                  <Button variant="contained" onClick={() => openView(todo)}>
+                  <Button variant="contained" onClick={() => editTodo(todo)}>
                     Edit Todo
                   </Button>
                 </Box>
@@ -142,22 +132,8 @@ const Home = () => {
           </Grid>
         )}
       </Grid>
-      <Popup
-        className={"view-popup"}
-        handleClose={handleClose}
-        fullWidth={false}
-        open={open.edit}
-      >
-        <Typography textAlign="center" variant="h4">
-          {openedTodo.title}
-        </Typography>
-        <Typography variant="p" fontSize="20px">
-          {openedTodo.description}
-        </Typography>
-        <h1>status: {openedTodo.status}</h1>
-      </Popup>
-      <Popup handleClose={handleClose} fullWidth={false} open={open.create}>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+      <Popup handleClose={handleClose} fullWidth={false} open={open}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -176,11 +152,12 @@ const Home = () => {
           <FormControl fullWidth>
             <InputLabel>Select Group</InputLabel>
             <Select name="group" defaultValue="" label="Select group">
-              {groups.map((group) => (
-                <MenuItem key={group.id} value={group.id}>
-                  {group.name}
-                </MenuItem>
-              ))}
+              {groups.length !== 0 &&
+                groups.map((group) => (
+                  <MenuItem key={group.id} value={group.id}>
+                    {group.name}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
           <Button

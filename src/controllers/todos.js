@@ -51,3 +51,28 @@ export const createTodo = async (token, newTodo) => {
     throw Error("Not authorized");
   }
 };
+
+export const getTodoById = async (token, todoId) => {
+  const isAuthencitaed = await checkToken(token);
+  if (isAuthencitaed) {
+    const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    const groups = JSON.parse(localStorage.getItem("groups")) || [];
+    const singleTodo = allTodos.find((todo) => todo.id === todoId);
+    const group = groups.find((group) => group.id === singleTodo.group);
+    return { ...singleTodo, group: group.id };
+  }
+};
+
+export const editTodo = async (token, todoId, newTodo) => {
+  const { title, description, group } = newTodo;
+  const isAuthencitaed = await checkToken(token);
+  if (isAuthencitaed) {
+    const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    const index = allTodos.findIndex((todo) => todo.id === todoId);
+    allTodos[index].title = title;
+    allTodos[index].description = description;
+    allTodos[index].description = description;
+    localStorage.setItem("todos", JSON.stringify(allTodos));
+    return { todo: allTodos[index] };
+  }
+};
