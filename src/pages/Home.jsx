@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Card, Grid, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Popup from "../components/Popup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
@@ -7,18 +15,24 @@ import { getActiveTodos } from "../controllers/todos";
 import cookie from "react-cookies";
 import { useDispatch, useSelector } from "react-redux";
 import { getActiveTodosReducer } from "../store/reducers/todos-slice";
+import { getAllGroups } from "../controllers/groups";
+import { getGroupsReducer } from "../store/reducers/groups-slice";
 
 const Home = () => {
   const dispatch = useDispatch();
   const { todos, isLoading } = useSelector((state) => state.todo);
+  const { groups } = useSelector((state) => state.group);
+
   useEffect(() => {
     const token = cookie.load("user") ? cookie.load("user") : "";
     getActiveTodos(token).then((todos) => {
       dispatch(getActiveTodosReducer(todos));
     });
+    getAllGroups(token).then((groups) => {
+      dispatch(getGroupsReducer(groups));
+    });
     // eslint-disable-next-line
   }, []);
-
   // const groups = [
   //   {
   //     name: "Group 1",
@@ -60,18 +74,34 @@ const Home = () => {
   //   const group = groups.find((group) => group.id === todo.groupId);
   //   return { ...todo, group: group.name };
   // });
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState({
+    edit: false,
+    create: false,
+  });
   const [openedTodo, setOpenedTodo] = useState({});
   const openView = (currentTodo) => {
     setOpenedTodo(currentTodo);
-    setOpen(true);
+    setOpen((prev) => ({ ...prev, edit: true }));
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpen({ edit: false, create: false });
     setTimeout(() => {
       setOpenedTodo({});
     }, 100);
+  };
+
+  const createPopup = () => {
+    setOpen((prev) => ({ ...prev, create: true }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      title: data.get("title"),
+      description: data.get("description"),
+    });
   };
 
   return (
@@ -94,7 +124,13 @@ const Home = () => {
           <Typography variant="h4">Active Todos</Typography>
         </Grid>
         <Grid item>
-          <Button variant="contained">Create Todo</Button>
+          <Button
+            onClick={createPopup}
+            disabled={groups.length ? false : true}
+            variant="contained"
+          >
+            Create Todo
+          </Button>
         </Grid>
       </Grid>
       <Grid className="active-todo-list" container spacing={2}>
@@ -139,7 +175,7 @@ const Home = () => {
         className={"view-popup"}
         handleClose={handleClose}
         fullWidth={false}
-        open={open}
+        open={open.edit}
       >
         <Typography textAlign="center" variant="h4">
           {openedTodo.title}
@@ -148,6 +184,38 @@ const Home = () => {
           {openedTodo.description}
         </Typography>
         <h1>status: {openedTodo.status}</h1>
+      </Popup>
+      <Popup handleClose={handleClose} fullWidth={false} open={open.create}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}
+        >
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Title"
+            name="title"
+            autoFocus
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="description"
+            label="description"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Create Todo
+          </Button>
+        </Box>
       </Popup>
     </Card>
   );

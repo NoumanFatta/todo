@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 import BlankLayout from "./components/BlankLayout";
 import MainLayout from "./components/MainLayout";
+import Groups from "./pages/Groups";
 import Home from "./pages/Home";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
@@ -42,7 +43,7 @@ const Routes = ({ isLoggedIn }) => {
         },
         {
           path: "groups",
-          element: <Home />,
+          element: <Groups />,
         },
       ],
     },
